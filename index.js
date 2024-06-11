@@ -33,34 +33,51 @@ var stack = new Stack();
 function postFix(array) {
 
   for(var i = 0; i < array.length; i++) {
-    if(array[i] == '+' || array[i] == '-' || array[i] == '*' || array[i] == '/') {
-      var operand_1 = stack.pop();
-      var operand_2 = stack.pop();
-      var operator = array[i];
-      var calculated;
 
-      if(operator == '+') {
-        calculated = operand_1 + operand_2;
-      } else if(operator == '-') {
-        calculated = operand_1 - operand_2;
-      } else if(operator == '*') {
-        calculated = operand_1 * operand_2;
-      } else if(operator == '/') {
-        calculated = operand_1 / operand_2;
-      }
-      
-      stack.push(calculated);
-  } else {
-    stack.push(array[i]);
-  }
+    let element = array[i];
+    var x, y;
+
+    switch(element) {
+      case '+':
+        x = stack.pop();
+        y = stack.pop();
+
+        stack.push(x + y);
+        break;
+
+      case '-':
+        x = stack.pop();
+        y = stack.pop();
+
+        stack.push(x - y);
+        break;
+
+      case '*':
+        x = stack.pop();
+        y = stack.pop();
+
+        stack.push(x * y);
+        break;
+
+      case '/':
+        x = stack.pop();
+        y = stack.pop();
+
+        stack.push(x / y);
+        break;
+
+      default:
+        stack.push(element);
+        break;
+    }
 
   }
   return stack.peek();
 }
 
-function draw() {
+function main() {
   var final_value = postFix(example_array);
   console.log(final_value);
 }
 
-draw();
+main();
