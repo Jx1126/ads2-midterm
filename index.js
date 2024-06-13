@@ -45,7 +45,7 @@ function main() {
       input_array = input_array.split(" ");
       console.log("Steps breakdown: ");
       // Show the output of the PostFix function in the console using the user input
-      console.log("Final Output:", postFix(input_array), "\n");
+      console.log("Final Output:", postFix(input_array) ? postFix(input_array) : "Updated variable successfully.", "\n");;
       // Run the main function again to allow for more user input
       main();
     }
