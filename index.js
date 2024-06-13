@@ -14,18 +14,6 @@ class Stack {
   peek() {
     return this.stack[this.stack.length - 1];
   }
-
-  size() {
-    return this.stack.length;
-  }
-
-  isEmpty() {
-    if (this.stack.length == 0) {
-      return true;
-    } else {
-      return false;
-    }
-  }
 }
 
 class HashTable {
@@ -89,71 +77,152 @@ const rl = readline.createInterface({
 // Main function to run the program
 function main() {
   // Prompt for user input
-  rl.question("--------------\n[ PostFix++ Calculator ]\n--------------\nList of commands:\n1. Enter a PostFix++ Expression. For Example: 3 4 5 + *\n2. 'search <variable>' - Search for the value of a variable.\n3. 'set <variable> <value>' - Set a value to a variable.\n4. 'delete <variable>' - Remove a variable and its value\n--------------\nYour Input: ", (input_array) => {
-      // Split the input into an array when a space is detected
-      input_array = input_array.split(" ");
+  rl.question("--------------\n[ Algorithm and Data Structure II ]\n--------------\nPlease enter one of the following: \n1 - PostFix++ Calculator\n2 - Search for the value of a variable.\n3 - Set a value to a variable.\n4 - Remove a variable and its value.\nReturn - Return to main menu\n--------------\nYour Input: ", (input) => {
 
-      if(!checkInput(input_array)){
-        console.log("Steps breakdown: ");
-        // Show the output of the PostFix function in the console using the user input
-        console.log("Final Output:", postFix(input_array), "\n");;
-        } else {
-          checkInput(input_array);
-        }
-        
+    // Convert the user input to uppercase if it is a string
+    input = input.toUpperCase();
+
+    // Check the user input and run the respective function
+    switch (input){
+      // If the user input is 1
+      case "1":
+        postFixCalc();
+        break;
+      
+      case "2":
+        searchVar();
+        break;
+
+      case "3":
+        setVar();
+        break;
+
+      case "4":
+        removeVar();
+        break;
+
+      // If the user input is RETURN
+      case "RETURN":
+        console.log("You are already in the main menu.");
+        break;
+
+      // If the user input is not in the list
+      default:
+        console.log("Invalid input. Please enter a valid input.");
+        break;
+    }   
       // Run the main function again to allow for more user input
-      main();
-    }
-  );
+      main();  
+  });
 }
 
+// Run the main function to start
 main();
 
-// Create an array to store variables and their values
-const variables = [];
-
+// Creating a new hash table with a size of 26 for the 26 alphabets
 const hashTable = new HashTable(26);
 
-function checkInput(input) {
-  if (input.length >= 3 && input[0].toUpperCase() === "SET") {
-    // Set command: set a 2
-    const variable = input[1].toUpperCase();
-    const value = input.slice(2).join(" "); // Join all elements from index 2 onwards as the value
+function postFixCalc(input) {
 
-    hashTable.set(variable, parseFloat(value));
-    console.log(`Variable [${variable}] has been set to ${value}.`);
-    return true;
-  } else if (input.length === 2 && input[0].toUpperCase() === "SEARCH") {
-    // Search command: search a
-    const variable = input[1].toUpperCase();
+  rl.question("\n--------------\n[ PostFix++ Calculator ]\n--------------\nPlease Enter a PostFix++ Expression.\nFormat: <operand> <operator>\nExample: 3 4 5 + *\nReturn - Return to main menu\n\nYour Input: ", (input_array) => {
+
+    // Convert the user input to an array when there is a space
+    input_array = input_array.split(" ");
+    console.log(">> Steps breakdown: ");
+    // Show the output of the PostFix function in the console using the user input
+    console.log(">> Final Output:", postFix(input_array));;
+    
+    // Run the postFixCalc function again to allow for more user input
+    postFixCalc();
+  });
+}
+
+// A function to search for the value of a variable
+function searchVar(input) {
+
+  rl.question("\n--------------\n[ Search for the value of a variable. ]\n--------------\nPlease enter a variable name (A - Z).\nFormat: <variable>\nExample: a\nReturn - Return to main menu\n\nYour Input: ", (input) => {
+
+    // Return to the main menu if the user input is "RETURN"
+    returnToMain(input);
+
+    // Convert the first element of the user input array into uppercase
+    const variable = input[0].toUpperCase();
+    // Get the value of the variable from the hash table
     const value = hashTable.get(variable);
+
+    // Log the value of the variable to the console if it is found
     if (value !== undefined) {
-      console.log(`Searching for variable: ${variable}`);
-      console.log(`Value: ${value}`);
-      return true; // Return true after logging the search result
+      console.log(">> Variable '" + variable + "' =", value + ".");
     } else {
-      console.log(`Variable ${variable} not found.`);
-      return false; // Return false if variable is not found
+      console.log(">> Variable '" + variable + "'not found.");
     }
-  } else if (input.length === 2 && input[0].toUpperCase() === "DELETE") {
-    // Delete command: delete a
-    const variable = input[1].toUpperCase();
-    const deleted = hashTable.delete(variable);
-    if (deleted) {
-      console.log(`Deleting variable: ${variable}`);
-      return true; // Return true after deleting the variable
+
+    // Run the searchVar function again to allow for more user input
+    searchVar();
+  });
+}
+
+// A function to set a value to a variable
+function setVar(input) {
+  rl.question("\n--------------\n[ Set a value to a variable. ]\n--------------\nPlease enter a variable name (A - Z) to.\nFormat: <variable> <value>\nExample: a 5\nReturn - Return to main menu\n\nYour Input: ", (input) => {
+
+    // Return to the main menu if the user input is "RETURN"
+    returnToMain(input);
+
+    // Convert the user input to an array when there is a space
+    input = input.split(" ");
+
+    // Convert the first element of the user input array into uppercase as it is a variable
+    const variable = input[0].toUpperCase();
+    // Get the value of the variable from the user input array
+    const value = parseFloat(input[1]);
+
+    // Set the value of the variable to the value
+    hashTable.set(variable, value);
+    console.log(">> Variable '" + variable + "' has been set to", value);
+
+    // Run the setVar function again to allow for more user input
+    setVar();
+  });
+}
+
+// A function to remove a variable and its value
+function removeVar(input) {
+  rl.question("\n--------------\n[ Remove a variable and its value. ]\n--------------\nPlease enter a variable name (A - Z).\nFormat: <variable>\nExample: a\nReturn - Return to main menu\n\nYour Input: ", (input) => {
+
+    // Return to the main menu if the user input is "RETURN"
+    returnToMain(input);
+
+    // Convert the first element of the user input array into uppercase as it is a variable
+    const variable = input[0].toUpperCase();
+    // Remove the variable from the hash table
+    const remove = hashTable.delete(variable);
+
+    // Return a message to the console if the variable is removed or not found
+    if (remove) {
+      console.log(">> Variable: '" + variable, "' has been removed.");
     } else {
-      if(!deleted){
-        console.log(`Variable ${variable} not found.`);
-      }
-      return false; // Return false if variable is not found
+      console.log(">> Variable '" + variable + "'not found.");
     }
-  } else {
-    console.log("Invalid command. Please use the following commands: set <variable> <value>, search <variable>, delete <variable>");
-    return false; // Return false for invalid commands
+
+    // Run the removeVar function again to allow for more user input
+    removeVar();
+  });
+}
+
+// A function to return users back to the main menu when they type "RETURN"
+function returnToMain(input) {
+  // Convert the user input to uppercase
+  input = input.toUpperCase();
+  // Check if the user input is "RETURN"
+  if(input == "RETURN") {
+    console.log(">> Returning to main menu.");
+    // Run the main function to call the main menu
+    main();
   }
 }
 
+// A function to calculate the PostFix expression
 function postFix(array) {
   // Create a new stack
   var stack = new Stack();
@@ -164,7 +233,7 @@ function postFix(array) {
     let x, y;
 
     // Check if the element is a number
-    if (!isNaN(element)) {
+    if (!isNaN(element) && element !== "") {
       // Push the element to the stack if it is a number
       stack.push(element);
     }
@@ -172,11 +241,20 @@ function postFix(array) {
       else if (element.match(/[a-zA-Z]/)) {
         // Convert the alphabet variable to uppercase
         element = element.toUpperCase();
+
+        if(element == "RETURN") {
+          console.log(">> Returning to main menu.");
+          main();
+        }
+
         // Push the alphabet variable to the stack
         stack.push(element);
     } else {
       // Check if the element is an operator
       switch (element) {
+        case "":
+          break;
+
         // If the element is +
         case "+":
           // Pop two element from the stack
@@ -284,23 +362,19 @@ function postFix(array) {
           // Check if the element is a variable
           if (isNaN(x)) {
             // Set the value of the variable to the value of the other variable
-            // variables[y] = variables[x];
-            // console.log("Variable [", y.toUpperCase(),"] has been set to ", variables[x] + ".");
             hashTable.set(y, hashTable.get(x));
-            console.log("Variable [", y.toUpperCase(),"] has been set to ", hashTable.get(x) + ".");
+            console.log(">> Variable [", y.toUpperCase(),"] has been set to ", hashTable.get(x) + ".");
           } else {
             // Set the value of the variable to the number as a float
-            // variables[y] = parseFloat(x);
-            // console.log("Variable [", y.toUpperCase(),"] has been set to ", x + ".");
             hashTable.set(y, parseFloat(x));
-            console.log("Variable [", y.toUpperCase(),"] has been set to ", x + ".");
+            console.log(">> Variable [", y.toUpperCase(),"] has been set to ", x + ".");
           }
           break;
 
         // If the element is not a operator mentioned above
         default:
           // Log an error message to the console
-          console.log('The operator: [', element, '] is invalid and will be ignored. Please only use the following operators: +, -, *, /, %, ^, =');
+          console.log('>> The operator: [', element, '] is invalid and will be ignored. Please only use the following operators: +, -, *, /, %, ^, =');
           // Break out of the switch statement
           break;
       }
