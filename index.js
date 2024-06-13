@@ -28,7 +28,10 @@ class HashTable {
   constructor(size) {
     this.size = size;
     // Create a hash table with a size of 26 for the 26 alphabets and fill it with empty arrays
-    this.hash_table = new Array(size).fill(null).map(() => []);
+    this.hash_table = [];
+    for (let i = 0; i < size; i++) {
+      this.hash_table[i] = [];
+    }
   }
 
   // Hash function to get the index of the key
@@ -140,12 +143,12 @@ function main() {
 
       // If the user input is RETURN
       case "RETURN":
-        console.log("You are already in the main menu.");
+        console.log(">> You are already in the main menu.\n");
         break;
 
       // If the user input is not in the list
       default:
-        console.log("Invalid input. Please enter a valid input.");
+        console.log(">> Invalid input. Please enter a valid input.\n");
         break;
     }   
       // Run the main function again to allow for more user input
@@ -272,7 +275,7 @@ function showAllVar() {
         // Skip the 'RETURN' variable
         if (hashTable.hash_table[i][j][0] != "RETURN") {
           // Log the variable and its value to the console
-          console.log(">> Variable: '" + hashTable.hash_table[i][j][0] + "' = ", hashTable.hash_table[i][j][1]);
+          console.log(">> Variable '" + hashTable.hash_table[i][j][0] + "' = ", hashTable.hash_table[i][j][1]);
         }
       }
     }
@@ -443,11 +446,11 @@ function postFix(array) {
           if (isNaN(x)) {
             // Set the value of the variable to the value of the other variable
             hashTable.set(y, hashTable.get(x));
-            console.log(">> Variable [", y.toUpperCase(),"] has been set to ", hashTable.get(x) + ".");
+            console.log(">> Variable [", y.toUpperCase(),"] has been set to", hashTable.get(x) + ".");
           } else {
             // Set the value of the variable to the number as a float
             hashTable.set(y, parseFloat(x));
-            console.log(">> Variable [", y.toUpperCase(),"] has been set to ", x + ".");
+            console.log(">> Variable [", y.toUpperCase(),"] has been set to", x + ".");
           }
           break;
 
