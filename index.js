@@ -14,54 +14,87 @@ class Stack {
   peek() {
     return this.stack[this.stack.length - 1];
   }
+
+  isEmpty() {
+    if (this.stack.length == 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
 
 class HashTable {
   constructor(size) {
     this.size = size;
+    // Create a hash table with a size of 26 for the 26 alphabets and fill it with empty arrays
     this.hash_table = new Array(size).fill(null).map(() => []);
   }
 
+  // Hash function to get the index of the key
+  // ASCII value of A is 65, so we -65 to get the index of A starting from 0
   hash(key){
     return key.toUpperCase().charCodeAt(0) - 65;
   }
 
+  // A function to set the value of the key in the hash table
   set(key, value){
+    // Get the index of the key
     const index = this.hash(key);
+    // Get the bucket of the index
     const bucket = this.hash_table[index];
 
+    // Loop through the bucket 
     for(var i = 0; i < bucket.length; i++) {
+      // If a matching key is the same as the input key
       if(bucket[i][0] == key) {
+        // Set the value to the input value
         bucket[i][1] = value;
         return;
       }
     }
+    // Push the key and value to the bucket
     bucket.push([key, value]);
   }
 
+  // A function to get the value of the key in the hash table
   get(key){
+    // Get the index of the key
     const index = this.hash(key);
+    // Get the bucket of the index
     const bucket = this.hash_table[index];
 
+    // Loop through the bucket
     for(var i = 0; i < bucket.length; i++) {
+      // If a matching key is the same as the input key
       if(bucket[i][0] == key) {
+        // Return the value of the key
         return bucket[i][1];
       }
     }
+    // Return undefined if the key is not in the hash table
     return undefined;
   }
 
+  // A function to delete the key in the hash table
   delete(key){
-      const index = this.hash(key);
-      const bucket = this.hash_table[index];
+    // Get the index of the key
+    const index = this.hash(key);
+    // Get the bucket of the index
+    const bucket = this.hash_table[index];
 
-      for(var i = 0; i < bucket.length; i++) {
-        if(bucket[i][0] == key) {
-          bucket.splice(i, 1);
-          return true;
-        }
+    // Loop through the bucket
+    for(var i = 0; i < bucket.length; i++) {
+      // If a matching key is the same as the input key
+      if(bucket[i][0] == key) {
+        // Remove the key and value from the bucket
+        bucket.splice(i, 1);
+        // Return true if the key is removed
+        return true;
       }
-      return false;
+    }
+    // Return false if the key is not found
+    return false;
   }
 }
 
@@ -77,7 +110,7 @@ const rl = readline.createInterface({
 // Main function to run the program
 function main() {
   // Prompt for user input
-  rl.question("--------------\n[ Algorithm and Data Structure II ]\n--------------\nPlease enter one of the following: \n1 - PostFix++ Calculator\n2 - Search for the value of a variable.\n3 - Set a value to a variable.\n4 - Remove a variable and its value.\nReturn - Return to main menu\n--------------\nYour Input: ", (input) => {
+  rl.question("--------------\n[ Algorithm and Data Structure II ]\n--------------\nPlease enter one of the following: \n1 - PostFix++ Calculator\n2 - Search for the value of a variable.\n3 - Set a value to a variable.\n4 - Remove a variable and its value.\n5 - Show all variables and their value\nReturn - Return to main menu\n--------------\nYour Input: ", (input) => {
 
     // Convert the user input to uppercase if it is a string
     input = input.toUpperCase();
@@ -99,6 +132,10 @@ function main() {
 
       case "4":
         removeVar();
+        break;
+
+      case "5":
+        showAllVar();
         break;
 
       // If the user input is RETURN
@@ -207,6 +244,49 @@ function removeVar(input) {
 
     // Run the removeVar function again to allow for more user input
     removeVar();
+  });
+}
+
+// A function to show all variables and their values
+function showAllVar() {
+  // Check if the hash table is empty
+  let isEmpty = true;
+  // Loop through the hash table to check if all the buckets are empty
+  for (var i = 0; i < hashTable.hash_table.length; i++) {
+    // If the length of the bucket is more than 0
+    if (hashTable.hash_table[i].length > 0) {
+      // Set isEmpty to false
+      isEmpty = false;
+      // Break out of the loop when a non-empty bucket is found
+      break;
+    }
+  }
+
+  // Log a message if the hash table is empty
+  if (isEmpty) {
+    console.log(">> There are currently no set variables.");
+  } else {
+    // Loop through the hash table to display all the variables and their values
+    for (var i = 0; i < hashTable.hash_table.length; i++) {
+      for (var j = 0; j < hashTable.hash_table[i].length; j++) {
+        // Skip the 'RETURN' variable
+        if (hashTable.hash_table[i][j][0] != "RETURN") {
+          // Log the variable and its value to the console
+          console.log(">> Variable: '" + hashTable.hash_table[i][j][0] + "' = ", hashTable.hash_table[i][j][1]);
+        }
+      }
+    }
+  }
+
+  // Ask for user input after displaying all variables
+  rl.question("\nEnter 'Return' to go back to the main menu.\nYour Input: ", (input) => {
+    if (input.toUpperCase() === "RETURN") { // Corrected here
+      // Return to the main menu
+      main();
+    } else {
+      console.log(">> Invalid input. Please enter 'return' to go back to the main menu.");
+      showAllVar();
+    }
   });
 }
 
