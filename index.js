@@ -12,7 +12,7 @@ class Stack {
   }
 
   peek() {
-    return this.stack[this.stack.length - 1];
+    return this.stack[0];
   }
 
   isEmpty() {
@@ -21,6 +21,10 @@ class Stack {
     } else {
       return false;
     }
+  }
+
+  print() {
+    return this.stack
   }
 }
 
@@ -318,7 +322,7 @@ function postFix(array) {
     // Check if the element is a number
     if (!isNaN(element) && element !== "") {
       // Push the element to the stack if it is a number
-      stack.push(element);
+      stack.push(parseFloat(element));
     }
       // Check if the element is an alphabet
       else if (element.match(/[a-zA-Z]/)) {
@@ -464,7 +468,7 @@ function postFix(array) {
     }
   }
   // Return the top element of the stack
-  return stack.peek();
+  return stack.print();
 }
 
 // A function to check if the element is a variable or a number
