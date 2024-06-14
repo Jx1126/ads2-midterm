@@ -41,7 +41,7 @@ class HashTable {
   }
 
   // A function to set the value of the key in the hash table
-  set(key, value){
+  insert(key, value){
     // Get the index of the key
     const index = this.hash(key);
     // Get the bucket of the index
@@ -61,7 +61,7 @@ class HashTable {
   }
 
   // A function to get the value of the key in the hash table
-  get(key){
+  search(key){
     // Get the index of the key
     const index = this.hash(key);
     // Get the bucket of the index
@@ -80,7 +80,7 @@ class HashTable {
   }
 
   // A function to delete the key in the hash table
-  delete(key){
+  remove(key){
     // Get the index of the key
     const index = this.hash(key);
     // Get the bucket of the index
@@ -113,7 +113,7 @@ const rl = readline.createInterface({
 // Main function to run the program
 function main() {
   // Prompt for user input
-  rl.question("--------------\n[ Algorithm and Data Structure II ]\n--------------\nPlease enter one of the following: \n1 - PostFix++ Calculator\n2 - Search for the value of a variable.\n3 - Set a value to a variable.\n4 - Remove a variable and its value.\n5 - Show all variables and their value\nReturn - Return to main menu\n--------------\nYour Input: ", (input) => {
+  rl.question("--------------\n[ Algorithm and Data Structure II ]\n--------------\nPlease enter one of the following: \n1 - PostFix++ Calculator\n2 - Search for the value of a variable.\n3 - Insert value to a variable.\n4 - Remove a variable and its value.\n5 - Show all variables and their value\nReturn - Return to main menu\n--------------\nYour Input: ", (input) => {
 
     // Convert the user input to uppercase if it is a string
     input = input.toUpperCase();
@@ -130,7 +130,7 @@ function main() {
         break;
 
       case "3":
-        setVar();
+        insertVar();
         break;
 
       case "4":
@@ -188,7 +188,7 @@ function searchVar(input) {
     // Convert the first element of the user input array into uppercase
     const variable = input[0].toUpperCase();
     // Get the value of the variable from the hash table
-    const value = hashTable.get(variable);
+    const value = hashTable.search(variable);
 
     // Log the value of the variable to the console if it is found
     if (value !== undefined) {
@@ -203,7 +203,7 @@ function searchVar(input) {
 }
 
 // A function to set a value to a variable
-function setVar(input) {
+function insertVar(input) {
   rl.question("\n--------------\n[ Set a value to a variable. ]\n--------------\nPlease enter a variable name (A - Z) to.\nFormat: <variable> <value>\nExample: a 5\nReturn - Return to main menu\n\nYour Input: ", (input) => {
 
     // Return to the main menu if the user input is "RETURN"
@@ -218,11 +218,11 @@ function setVar(input) {
     const value = parseFloat(input[1]);
 
     // Set the value of the variable to the value
-    hashTable.set(variable, value);
+    hashTable.insert(variable, value);
     console.log(">> Variable '" + variable + "' has been set to", value);
 
-    // Run the setVar function again to allow for more user input
-    setVar();
+    // Run the insertVar function again to allow for more user input
+    insertVar();
   });
 }
 
@@ -236,7 +236,7 @@ function removeVar(input) {
     // Convert the first element of the user input array into uppercase as it is a variable
     const variable = input[0].toUpperCase();
     // Remove the variable from the hash table
-    const remove = hashTable.delete(variable);
+    const remove = hashTable.remove(variable);
 
     // Return a message to the console if the variable is removed or not found
     if (remove) {
@@ -445,11 +445,11 @@ function postFix(array) {
           // Check if the element is a variable
           if (isNaN(x)) {
             // Set the value of the variable to the value of the other variable
-            hashTable.set(y, hashTable.get(x));
-            console.log(">> Variable [", y.toUpperCase(),"] has been set to", hashTable.get(x) + ".");
+            hashTable.insert(y, hashTable.search(x));
+            console.log(">> Variable [", y.toUpperCase(),"] has been set to", hashTable.search(x) + ".");
           } else {
             // Set the value of the variable to the number as a float
-            hashTable.set(y, parseFloat(x));
+            hashTable.insert(y, parseFloat(x));
             console.log(">> Variable [", y.toUpperCase(),"] has been set to", x + ".");
           }
           break;
@@ -473,7 +473,7 @@ function getVarValue(element) {
   if (isNaN(element)) {
     // Return the value of the variable if it is a variable
     // return variables[element];
-    return hashTable.get(element);
+    return hashTable.search(element);
   } else {
     // Convert the element to a float if it is a number and return it
     return parseFloat(element);
