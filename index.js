@@ -4,11 +4,11 @@ class Stack {
   }
 
   push(element) {
-    this.stack.push(element);
+    this.stack.unshift(element);
   }
 
   pop(element) {
-    return this.stack.pop();
+    return this.stack.shift();
   }
 
   peek() {
@@ -24,7 +24,7 @@ class Stack {
   }
 
   print() {
-    return this.stack
+    return this.stack;
   }
 }
 
@@ -461,7 +461,7 @@ function postFix(array) {
         // If the element is not a operator mentioned above
         default:
           // Log an error message to the console
-          console.log('>> The operator: [', element, '] is invalid and will be ignored. Please only use the following operators: +, -, *, /, %, ^, =');
+          console.log(">> The operator: [", element, "] is invalid and will be ignored. Please only use the following operators: +, -, *, /, %, ^, =");
           // Break out of the switch statement
           break;
       }
