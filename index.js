@@ -166,7 +166,7 @@ main();
 // Creating a new hash table with a size of 26 for the 26 alphabets
 const hashTable = new HashTable(26);
 
-function postFixCalc(input) {
+function postFixCalc() {
 
   rl.question("\n--------------\n[ PostFix++ Calculator ]\n--------------\nPlease Enter a PostFix++ Expression.\nFormat: <operand> <operator>\nExample: 3 4 5 + *\nReturn - Return to main menu\n\nYour Input: ", (input_array) => {
 
@@ -182,7 +182,7 @@ function postFixCalc(input) {
 }
 
 // A function to search for the value of a variable
-function searchVar(input) {
+function searchVar() {
 
   rl.question("\n--------------\n[ Search for the value of a variable. ]\n--------------\nPlease enter a variable name (A - Z).\nFormat: <variable>\nExample: a\nReturn - Return to main menu\n\nYour Input: ", (input) => {
 
@@ -207,8 +207,8 @@ function searchVar(input) {
 }
 
 // A function to set a value to a variable
-function insertVar(input) {
-  rl.question("\n--------------\n[ Set a value to a variable. ]\n--------------\nPlease enter a variable name (A - Z) to.\nFormat: <variable> <value>\nExample: a 5\nReturn - Return to main menu\n\nYour Input: ", (input) => {
+function insertVar() {
+  rl.question("\n--------------\n[ Insert value to a variable. ]\n--------------\nPlease enter a variable name (A - Z) and the value.\nFormat: <variable> <value>\nExample: a 5\nReturn - Return to main menu\n\nYour Input: ", (input) => {
 
     // Return to the main menu if the user input is "RETURN"
     returnToMain(input);
@@ -231,7 +231,7 @@ function insertVar(input) {
 }
 
 // A function to remove a variable and its value
-function removeVar(input) {
+function removeVar() {
   rl.question("\n--------------\n[ Remove a variable and its value. ]\n--------------\nPlease enter a variable name (A - Z).\nFormat: <variable>\nExample: a\nReturn - Return to main menu\n\nYour Input: ", (input) => {
 
     // Return to the main menu if the user input is "RETURN"
