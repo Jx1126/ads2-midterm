@@ -7,7 +7,7 @@ class Stack {
     this.stack.unshift(element);
   }
 
-  pop(element) {
+  pop() {
     return this.stack.shift();
   }
 

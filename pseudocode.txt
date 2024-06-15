@@ -1,0 +1,4 @@
+// index.js in Pseudocode format
+
+class Stack
+	
