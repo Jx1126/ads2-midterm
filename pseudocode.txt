@@ -1,4 +1,270 @@
-// index.js in Pseudocode format
+class STACK
+	constructor
+		stack <- []
+	end constructor
 
-class Stack
-	
+	method PUSH(element)
+		UNSHIFT(stack, element)
+	end method
+
+	method POP()
+		return SHIFT(stack)
+	end method
+
+	method PEEK()
+		return stack[0]
+	end method
+
+	method ISEMPTY()
+		if LENGTH[stack] = 0 then
+			return true
+		else
+			return false
+		end if
+
+		method PRINT()
+			return stack
+		end method
+end class
+
+class HASHTABLE
+	constructor(size)
+		hash_table <- []
+		for 0 <= i < size do
+			hash_table[i] <- []
+		end for
+	end constructor
+
+	method HASH(key)
+		key <- UPPERCASE[key]
+		key <- CHARCODEAT[key] - 65
+	end method
+
+	method INSERT(key, value)
+		index <- HASH(key)
+		bucket <- hash_table[index]
+		for 0 <= i < LENGTH[bucket] do
+			if bucket[i][0] = key then
+				bucket[i][1] <- value
+				return
+			end if
+		end for
+		PUSH([key, value], bucket)
+	end method
+
+	method SEARCH(key)
+		index <- HASH(key)
+		bucket <- hash_table[index]
+		for 0 <= i < LENGTH[bucket] do
+			if bucket[i][0] = key then
+				return bucket[i][1]
+			end if
+		end for
+		return undefined
+	end method
+
+	method REMOVE(key)
+		index <- HASH(key)
+		bucket <- hash_table[index]
+		for 0 <= i < LENGTH[bucket] do
+			if bucket[i][0] = key then
+				SPLICE[i, 1] from bucket
+				return true
+			end if
+		end for
+		return false
+	end method
+end class
+
+function MAIN()
+    PRINT question
+    input <- READLINE
+    if input = "1" then
+        POSTFIXCALC()
+    else if input = "2" then
+        SEARCHVAR()
+    else if input = "3" then
+        INSERTVAR()
+    else if input = "4" then
+        REMOVEVAR()
+    else if input = "5" then
+        SHOWALLVAR()
+    else if input = "RETURN" then
+        PRINT "Already in the main menu"
+    else
+        PRINT "Invalid input"
+    end if
+    MAIN()
+end function
+
+function POSTFIXCALC()
+    PRINT "Enter PostFix++ Expression"
+    input <- READLINE
+    input_array <- SPLIT input BY " "
+    PRINT "Steps breakdown:"
+    result <- POSTFIX(input_array)
+    PRINT "Final Output:", result
+    POSTFIXCALC()
+end function
+
+function SEARCHVAR(input)
+    PRINT "Enter variable name (A-Z)"
+    input <- READLINE
+    if input = "RETURN" then
+        MAIN()
+    end if
+
+    variable <- UPPERCASE[input[0]]
+    value <- SEARCH(variable) from hashTable
+    if value != undefined then
+        PRINT "Variable '", variable, "' = ", value
+    else
+        PRINT "Variable '", variable, "' not found"
+    end if
+    SEARCHVAR()
+end function
+
+function INSERTVAR()
+    PRINT "Enter variable name (A-Z) and the value"
+    input <- READLINE
+    if input = "RETURN" then
+        MAIN()
+    end if
+
+    input <- SPLIT input BY " "
+    variable <- UPPERCASE[input[0]]
+    value <- PARSEFLOAT[input[1]]
+    INSERT(variable, value) from hashTable
+    PRINT "Variable '", variable, "' set to ", value
+    INSERTVAR()
+end function
+
+function REMOVEVAR()
+    PRINT "Enter variable name (A-Z)"
+    input <- READLINE
+    if input = "RETURN" then
+        MAIN()
+    end if
+
+    variable <- UPPERCASE[input[0]]
+    removed <- REMOVE(variable) from hashTable
+    if removed then
+        PRINT "Variable '", variable, "' removed"
+    else
+        PRINT "Variable '", variable, "' not found"
+    end if
+    REMOVEVAR()
+end function
+
+function SHOWALLVAR()
+    isEmpty <- true
+    for 0 <= i < LENGTH[hash_table] do
+        if LENGTH[hash_table[i]] > 0 then
+            isEmpty <- false
+            break
+        end if
+    end for
+
+    if isEmpty then
+        PRINT "No set variables currently"
+    else
+        for 0 <= i < LENGTH[hash_table] do
+            for 0 <= j < LENGTH[hash_table[i]] do
+                if hash_table[i][j][0] != "RETURN" then
+                    PRINT "Variable '", hash_table[i][j][0], "' = ", hash_table[i][j][1]
+                end if
+            end for
+        end for
+    end if
+    PRINT "Enter 'Return' to go back to main menu"
+
+    input <- READLINE
+		input <- UPPERCASE[input]
+    if input = "RETURN" then
+        MAIN()
+    else
+        PRINT "Invalid input"
+        SHOWALLVAR()
+    end if
+end function
+
+function POSTFIX(array)
+    stack <- new STACK from CLASS
+    for 0 <= i < LENGTH[array] do
+        element <- array[i]
+        if !NOTANUMBER[element] and !EMPTY then
+            PUSH(stack, PARSEFLOAT[element])
+        else if MATCH[element] with a-z OR A-Z then
+            element <- UPPERCASE[element]
+            if element = "RETURN" then
+                MAIN()
+            end if
+            PUSH(stack, element)
+        else
+            if element = "+" then
+                x <- POP(stack)
+                y <- POP(stack)
+                x <- GETVARVALUE(x)
+                y <- GETVARVALUE(y)
+                PRINT x, "+", y, "=", x + y
+                PUSH(stack, x + y)
+            else if element = "-" then
+                x <- POP(stack)
+                y <- POP(stack)
+                x <- GETVARVALUE(x)
+                y <- GETVARVALUE(y)
+                PRINT x, "-", y, "=", x - y
+                PUSH(stack, x - y)
+            else if element = "*" then
+                x <- POP(stack)
+                y <- POP(stack)
+                x <- GETVARVALUE(x)
+                y <- GETVARVALUE(y)
+                PRINT x, "*", y, "=", x * y
+                PUSH(stack, x * y)
+            else if element = "/" then
+                x <- POP(stack)
+                y <- POP(stack)
+                x <- GETVARVALUE(x)
+                y <- GETVARVALUE(y)
+                PRINT x, "/", y, "=", x / y
+                PUSH(stack, x / y)
+            else if element = "%" then
+                x <- POP(stack)
+                y <- POP(stack)
+                x <- GETVARVALUE(x)
+                y <- GETVARVALUE(y)
+                PRINT x, "%", y, "=", x % y
+                PUSH(stack, x % y)
+            else if element = "^" then
+                x <- POP(stack)
+                y <- POP(stack)
+                x <- GETVARVALUE(x)
+                y <- GETVARVALUE(y)
+                PRINT x, "^", y, "=", x ^ y
+                PUSH(stack, x ^ y)
+            else if element = "=" then
+                x <- POP(stack)
+                y <- POP(stack)
+                if NOTANUMBER[x] then
+                    INSERT(y, SEARCH(x) from hashTable) into hashTable
+                    PRINT "Variable [", y, "] set to", SEARCH(x) from hashTable
+                else
+                    INSERT(y, PARSEFLOAT[x]) into hashTable
+                    PRINT "Variable [", y, "] set to", x
+                end if
+            else
+                PRINT "Invalid operator:", element
+            end if
+        end if
+    end for
+    return PRINT(stack)
+end function
+
+function GETVARVALUE(element)
+    if NOTANUMBER[element] then
+        return SEARCH(element) from hashTable
+    else
+        return PARSEFLOAT[element]
+    end if
+end function
