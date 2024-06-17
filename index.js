@@ -298,9 +298,9 @@ function showAllVar() {
     for (var i = 0; i < hashTable.hash_table.length; i++) {
       for (var j = 0; j < hashTable.hash_table[i].length; j++) {
         // Skip the 'RETURN' variable
-        if (hashTable.hash_table[i][j] != "RETURN") {
+        if (hashTable.hash_table[i][j][0] != "RETURN") {
           // Log the variable and its value to the console
-          console.log(">> Variable '" + hashTable.hash_table[i][j][0] + "' = ", hashTable.hash_table[i][j][0]);
+          console.log(">> Variable '" + hashTable.hash_table[i][j][0] + "' = ", hashTable.hash_table[i][j][1]);
         }
       }
     }

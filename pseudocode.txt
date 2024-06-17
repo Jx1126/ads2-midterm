@@ -79,6 +79,8 @@ end class
 function MAIN()
     PRINT question
     input <- READLINE
+    input <- UPPERCASE[input]
+    input <- TRIM[input]
     if input = "1" then
         POSTFIXCALC()
     else if input = "2" then
@@ -110,16 +112,21 @@ end function
 function SEARCHVAR(input)
     PRINT "Enter variable name (A-Z)"
     input <- READLINE
+    input <- SPLIT input BY " "
     if input = "RETURN" then
         MAIN()
     end if
 
-    variable <- UPPERCASE[input[0]]
-    value <- SEARCH(variable) from hashTable
-    if value != undefined then
-        PRINT "Variable '", variable, "' = ", value
+    if input[0] MATCHES a-z OR A-Z then
+        variable <- UPPERCASE[input[0]]
+        value <- SEARCH(variable) from hashTable
+        if value != undefined then
+            PRINT "Variable '", variable, "' = ", value
+        else
+            PRINT "Variable '", variable, "' not found"
+        end if
     else
-        PRINT "Variable '", variable, "' not found"
+        PRINT "Invalid input"
     end if
     SEARCHVAR()
 end function
@@ -132,10 +139,19 @@ function INSERTVAR()
     end if
 
     input <- SPLIT input BY " "
-    variable <- UPPERCASE[input[0]]
-    value <- PARSEFLOAT[input[1]]
-    INSERT(variable, value) from hashTable
-    PRINT "Variable '", variable, "' set to ", value
+    if input[0] MATCHES a-z OR A-Z AND NOTANUMBER[input[1]] then
+        variable <- UPPERCASE[input[0]]
+        variable <- CHARAT[input[0], 0]
+        value <- PARSEFLOAT[input[1]]
+        INSERT(variable, value) from hashTable
+        PRINT "Variable '", variable, "' set to ", value
+    else if !NOTANUMBER[input[0]] then
+        PRINT "Invalid variable name"
+
+        if NOTANUMBER[input[1]] then
+            PRINT "Invalid value"
+        end if
+    end if
     INSERTVAR()
 end function
 
@@ -146,12 +162,18 @@ function REMOVEVAR()
         MAIN()
     end if
 
-    variable <- UPPERCASE[input[0]]
-    removed <- REMOVE(variable) from hashTable
-    if removed then
-        PRINT "Variable '", variable, "' removed"
+    input <- SPLIT input BY " "
+    if input[0] MATCHES a-z OR A-Z then
+        variable <- UPPERCASE[input[0]]
+        variable <- CHARAT[input[0], 0]
+        removed <- REMOVE(variable) from hashTable
+        if removed then
+            PRINT "Variable '", variable, "' removed"
+        else
+            PRINT "Variable '", variable, "' not found"
+        end if
     else
-        PRINT "Variable '", variable, "' not found"
+        PRINT "Invalid input"
     end if
     REMOVEVAR()
 end function
@@ -177,15 +199,6 @@ function SHOWALLVAR()
         end for
     end if
     PRINT "Enter 'Return' to go back to main menu"
-
-    input <- READLINE
-		input <- UPPERCASE[input]
-    if input = "RETURN" then
-        MAIN()
-    else
-        PRINT "Invalid input"
-        SHOWALLVAR()
-    end if
 end function
 
 function POSTFIX(array)
@@ -201,7 +214,24 @@ function POSTFIX(array)
             end if
             PUSH(stack, element)
         else
-            if element = "+" then
+            if LENGTH[stack] < 2 then
+                PRINT "Invalid expression"
+                break
+            end if
+            
+            if element = ""
+                break
+            else if element = "++" then
+                x <- POP(stack)
+                x <- GETVARVALUE(x)
+                PRINT x, "++", "=", x + 1
+                PUSH(stack, x + 1)
+            else if element = "--" then
+                x <- POP(stack)
+                x <- GETVARVALUE(x)
+                PRINT x, "--", "=", x - 1
+                PUSH(stack, x - 1)
+            else if element = "+" then
                 x <- POP(stack)
                 y <- POP(stack)
                 x <- GETVARVALUE(x)
