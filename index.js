@@ -1,20 +1,25 @@
 class Stack {
+  // Create a stack with an empty array
   constructor() {
     this.stack = [];
   }
 
+  // A method to push an element to the stack using unshift to add it to the front of the array
   push(element) {
     this.stack.unshift(element);
   }
 
+  // A method to pop an element from the stack using shift to remove the first element of the array
   pop() {
     return this.stack.shift();
   }
 
+  // A method to get the top element of the stack
   peek() {
     return this.stack[0];
   }
 
+  // A method to check if the stack is empty
   isEmpty() {
     if (this.stack.length == 0) {
       return true;
@@ -23,6 +28,7 @@ class Stack {
     }
   }
 
+  // A method to print the stack  
   print() {
     return this.stack;
   }
@@ -235,10 +241,8 @@ function insertVar() {
       console.log(">> Variable '" + variable + "' has been set to", value);
     } else if (!isNaN(input[0])) {
       console.log(">> Error: Invalid input. Please enter a valid variable name (A - Z).");
-    
-      if (isNaN(input[1])) {
+    } else if (isNaN(input[1])) {
       console.log(">> Error: Invalid input. Please enter a valid float value.");
-      }
     }
 
     // Run the insertVar function again to allow for more user input
@@ -462,6 +466,11 @@ function postFix(array) {
           // Pop two element from the stack
           x = stack.pop();
           y = stack.pop();
+
+          if(!isNaN(x) && !isNaN(y)) {
+            console.log(">> Error: Cannot assign value to a number. Please assign a value to a variable.");
+            break;
+          }
 
           // Check if the element is a variable
           if (isNaN(x)) {

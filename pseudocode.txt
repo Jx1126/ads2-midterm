@@ -148,9 +148,8 @@ function INSERTVAR()
     else if !NOTANUMBER[input[0]] then
         PRINT "Invalid variable name"
 
-        if NOTANUMBER[input[1]] then
+    else if NOTANUMBER[input[1]] then
             PRINT "Invalid value"
-        end if
     end if
     INSERTVAR()
 end function
@@ -218,7 +217,7 @@ function POSTFIX(array)
                 PRINT "Invalid expression"
                 break
             end if
-            
+
             if element = ""
                 break
             else if element = "++" then
@@ -276,6 +275,10 @@ function POSTFIX(array)
             else if element = "=" then
                 x <- POP(stack)
                 y <- POP(stack)
+                if !NOTANUMBER[x] AND !NOTANUMBER[y] then
+                    PRINT "Cannot assign a value to another number"
+                end if
+
                 if NOTANUMBER[x] then
                     INSERT(y, SEARCH(x) from hashTable) into hashTable
                     PRINT "Variable [", y, "] set to", SEARCH(x) from hashTable
