@@ -145,7 +145,7 @@ function INSERTVAR()
         value <- PARSEFLOAT[input[1]]
         INSERT(variable, value) from hashTable
         PRINT "Variable '", variable, "' set to ", value
-    else if !NOTANUMBER[input[0]] then
+    else if input[0] !MATCHES a-z OR A-Z then
         PRINT "Invalid variable name"
 
     else if NOTANUMBER[input[1]] then
@@ -208,77 +208,89 @@ function POSTFIX(array)
             PUSH(stack, PARSEFLOAT[element])
         else if MATCH[element] with a-z OR A-Z then
             element <- UPPERCASE[element]
-            if element = "RETURN" then
-                MAIN()
-            end if
             PUSH(stack, element)
         else
-            if LENGTH[stack] < 2 then
-                PRINT "Invalid expression"
-                break
-            end if
-
+            element <- UPPERCASE[element]
             if element = ""
                 break
-            else if element = "++" then
-                x <- POP(stack)
-                x <- GETVARVALUE(x)
-                PRINT x, "++", "=", x + 1
-                PUSH(stack, x + 1)
-            else if element = "--" then
-                x <- POP(stack)
-                x <- GETVARVALUE(x)
-                PRINT x, "--", "=", x - 1
-                PUSH(stack, x - 1)
-            else if element = "+" then
+            else if element = "+" OR "-" OR "*" OR "/" OR "%" OR "^" then
+
+                if LENGTH[stack] < 2 then
+                    PRINT "Not enough operands for operation"
+                    break
+                end if
                 x <- POP(stack)
                 y <- POP(stack)
+
                 x <- GETVARVALUE(x)
                 y <- GETVARVALUE(y)
-                PRINT x, "+", y, "=", x + y
-                PUSH(stack, x + y)
-            else if element = "-" then
+
+                if element = "+" then
+                    result <-  x + y
+                else if element = "-" then
+                    result <-  x - y
+                else if element = "*" then
+                    result <-  x * y
+                else if element = "/" then
+                    if y = 0 then
+                        PRINT "Cannot divide by zero"
+                        break
+                    end if
+                    result <-  x / y
+                else if element = "%" then
+                    result <-  x % y
+                else if element = "^" then
+                    result <-  x ^ y
+                end if
+            
+            else if element = "SIN" OR "COS" OR "TAN" OR "SQRT" OR "CEIL" OR "FLOOR" "ABS" OR "ROUND" OR "LOG" then
+                if LENGTH[stack] < 1 then
+                    PRINT "Not enough operands for operation"
+                    break
+                end if
+
                 x <- POP(stack)
-                y <- POP(stack)
                 x <- GETVARVALUE(x)
-                y <- GETVARVALUE(y)
-                PRINT x, "-", y, "=", x - y
-                PUSH(stack, x - y)
-            else if element = "*" then
-                x <- POP(stack)
-                y <- POP(stack)
-                x <- GETVARVALUE(x)
-                y <- GETVARVALUE(y)
-                PRINT x, "*", y, "=", x * y
-                PUSH(stack, x * y)
-            else if element = "/" then
-                x <- POP(stack)
-                y <- POP(stack)
-                x <- GETVARVALUE(x)
-                y <- GETVARVALUE(y)
-                PRINT x, "/", y, "=", x / y
-                PUSH(stack, x / y)
-            else if element = "%" then
-                x <- POP(stack)
-                y <- POP(stack)
-                x <- GETVARVALUE(x)
-                y <- GETVARVALUE(y)
-                PRINT x, "%", y, "=", x % y
-                PUSH(stack, x % y)
-            else if element = "^" then
-                x <- POP(stack)
-                y <- POP(stack)
-                x <- GETVARVALUE(x)
-                y <- GETVARVALUE(y)
-                PRINT x, "^", y, "=", x ^ y
-                PUSH(stack, x ^ y)
+
+                if element = "SIN" then
+                    result <-  MATH.SIN[x]
+                    PRINT result
+                else if element = "COS" then
+                    result <-  MATH.COS[x]
+                    PRINT result
+                else if element = "TAN" then
+                    result <-  MATH.TAN[x]
+                    PRINT result
+                else if element = "SQRT" then
+                    result <-  MATH.SQRT[x]
+                    PRINT result
+                else if element = "CEIL" then
+                    result <-  MATH.CEIL[x]
+                    PRINT result
+                else if element = "FLOOR" then
+                    result <-  MATH.FLOOR[x]
+                    PRINT result
+                else if element = "ABS" then
+                    result <-  MATH.ABS[x]
+                    PRINT result
+                else if element = "ROUND" then
+                    result <-  MATH.ROUND[x]
+                    PRINT result
+                else if element = "LOG" then
+                    result <-  MATH.LOG[x]
+                    PRINT result
+                end if
+
+                PUSH(stack, result)
+
+                
             else if element = "=" then
                 x <- POP(stack)
                 y <- POP(stack)
                 if !NOTANUMBER[x] AND !NOTANUMBER[y] then
                     PRINT "Cannot assign a value to another number"
                 end if
-
+                
                 if NOTANUMBER[x] then
                     INSERT(y, SEARCH(x) from hashTable) into hashTable
                     PRINT "Variable [", y, "] set to", SEARCH(x) from hashTable
@@ -286,6 +298,11 @@ function POSTFIX(array)
                     INSERT(y, PARSEFLOAT[x]) into hashTable
                     PRINT "Variable [", y, "] set to", x
                 end if
+
+            else if element = "RETURN"
+                main();
+                break;
+                
             else
                 PRINT "Invalid operator:", element
             end if
