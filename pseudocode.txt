@@ -243,7 +243,7 @@ function POSTFIX(array)
                     result <-  x ^ y
                 end if
             
-            else if element = "SIN" OR "COS" OR "TAN" OR "SQRT" OR "CEIL" OR "FLOOR" "ABS" OR "ROUND" OR "LOG" then
+            else if element = "SIN" OR "COS" OR "TAN" OR "SQRT" OR "CEIL" OR "FLOOR" OR "ABS" OR "ROUND" OR "LOG" then
                 if LENGTH[stack] < 1 then
                     PRINT "Not enough operands for operation"
                     break
@@ -302,7 +302,7 @@ function POSTFIX(array)
             else if element = "RETURN"
                 main();
                 break;
-                
+
             else
                 PRINT "Invalid operator:", element
             end if
