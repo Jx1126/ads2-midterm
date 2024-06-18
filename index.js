@@ -131,7 +131,6 @@ function main() {
 
     // Check the user input and run the respective function
     switch (input){
-      // If the user input is 1
       case "1":
         postFixCalc();
         break;
@@ -175,13 +174,13 @@ const hashTable = new HashTable(26);
 
 function postFixCalc() {
 
-  rl.question("\n--------------\n[ PostFix++ Calculator ]\n--------------\nPlease Enter a PostFix++ Expression.\nFormat: <operand> <operator>\nExample: 3 4 5 + *\nReturn - Return to main menu\n\nYour Input: ", (input_array) => {
+  rl.question("\n--------------\n[ PostFix++ Calculator ]\n--------------\nPlease Enter a PostFix++ Expression.\nFormat: <operand> <operator>\nExample: 3 4 5 + *\nSupported operations: +, -, *, /, %, ^, =, SIN, COS, TAN, SQRT, CEIL, FLOOR, ABS, ROUND, LOG.\nReturn - Return to main menu\n\nYour Input: ", (input_array) => {
 
     // Convert the user input to an array when there is a space
     input_array = input_array.split(" ");
-    console.log(">> Steps breakdown: ");
+    console.log("Steps breakdown: ");
     // Show the output of the PostFix function in the console using the user input
-    console.log(">> Final Output:", postFix(input_array));
+    console.log("Final Output:", postFix(input_array));
     
     // Run the postFixCalc function again to allow for more user input
     postFixCalc();
@@ -229,7 +228,7 @@ function insertVar() {
     // Convert the user input to an array when there is a space
     input = input.split(" ");
 
-    if (input[0].match(/[a-zA-Z]/) && !isNaN(input[1])) {
+    if (input[0].match(/^[a-zA-Z]$/) && !isNaN(input[1])) {
 
       // Convert the first element of the user input array into uppercase as it is a variable
       const variable = input[0].toUpperCase().charAt(0);
@@ -239,7 +238,7 @@ function insertVar() {
       // Set the value of the variable to the value
       hashTable.insert(variable, value);
       console.log(">> Variable '" + variable + "' has been set to", value);
-    } else if (!isNaN(input[0])) {
+    } else if (!(input[0].match(/^[a-zA-Z]$/))) {
       console.log(">> Error: Invalid input. Please enter a valid variable name (A - Z).");
     } else if (isNaN(input[1])) {
       console.log(">> Error: Invalid input. Please enter a valid float value.");
@@ -338,127 +337,166 @@ function postFix(array) {
     if (!isNaN(element) && element !== "") {
       // Push the element to the stack if it is a number
       stack.push(parseFloat(element));
-    }
-      // Check if the element is an alphabet
-      else if (element.match(/[a-zA-Z]/)) {
+    
+    // Check if the element is an alphabet
+    } else if (element.match(/^[a-zA-Z]$/)) {
         // Convert the alphabet variable to uppercase
         element = element.toUpperCase();
-
-        if(element == "RETURN") {
-          console.log(">> Returning to main menu.");
-          main();
-        }
 
         // Push the alphabet variable to the stack
         stack.push(element);
     } else {
+      // Convert the element to uppercase
+      element = element.toUpperCase();
 
-      if (stack.print().length < 2){
-        console.log(">> Error: Not enough operands for the operator '" + element + "'");
-        break;
-      }
-      
       // Check if the element is an operator
       switch (element) {
         case "":
           break;
 
-        // If the element is +
+        // If the element is one of these operators +, -, *, /, %, ^
         case "+":
-          // Pop two element from the stack
-          x = stack.pop();
-          y = stack.pop();
-
-          // Check if the element is a variable
-          x = getVarValue(x);
-          y = getVarValue(y);
-
-          console.log(x, '+' , y, '=', x + y);
-
-          // Perform addition and push the result to the stack
-          stack.push(x + y);
-          // Break out of the switch statement
-          break;
-
-        // If the element is -
         case "-":
-          // Pop two element from the stack
-          x = stack.pop();
-          y = stack.pop();
-
-          // Check if the element is a variable
-          x = getVarValue(x);
-          y = getVarValue(y);
-
-          console.log(x, '-' , y, '=', x - y);
-
-          // Perform subtraction and push the result to the stack
-          stack.push(x - y);
-          // Break out of the switch statement
-          break;
-
-        // If the element is *
         case "*":
-          // Pop two element from the stack
-          x = stack.pop();
-          y = stack.pop();
-
-          // Check if the element is a variable
-          x = getVarValue(x);
-          y = getVarValue(y);
-
-          console.log(x, '*' , y, '=', x * y);
-          // Perform multiplication and push the result to the stack
-          stack.push(x * y);
-          // Break out of the switch statement
-          break;
-
-        // If the element is /
         case "/":
-          // Pop two element from the stack
-          x = stack.pop();
-          y = stack.pop();
-
-          // Check if the element is a variable
-          x = getVarValue(x);
-          y = getVarValue(y);
-
-          console.log(x, '/' , y, '=', x / y);
-
-          // Perform division and push the result to the stack
-          stack.push(x / y);
-          break;
-
-        // If the element is %
         case "%":
-          // Pop two element from the stack
+        case "^":
+          // Log an error if there are not enough operands for the operator
+          if (stack.print().length < 2) {
+            console.log(">> Error: Not enough operands for the operator '" + element + "'");
+            break;
+          }
+
+          // Pop top 2 operand from the top of the stack
           x = stack.pop();
           y = stack.pop();
 
-          // Check if the element is a variable
+          // Get the value if it is a variable
           x = getVarValue(x);
           y = getVarValue(y);
 
-          console.log(x, '%' , y, '=', x % y);
+          // Perform operation based on the operator
+          switch (element) {
+            // Perform addition if the operator is +
+            case "+":
+              result = x + y;
+              break;
 
-          // Perform division and push the result to the stack
-          stack.push(x % y);
+            // Perform subtraction if the operator is -
+            case "-":
+              result = x - y;
+              break;
+
+            // Perform multiplication if the operator is *
+            case "*":
+              result = x * y;
+              break;
+
+            // Perform division if the operator is /
+            case "/":
+              if(y == 0) {
+                console.log("\n>> Error: Cannot divide by 0.\n");
+                return;
+              } 
+              result = x / y;
+              break;
+
+            // Perform modulo if the operator is %
+            case "%":
+              result = x % y;
+              break;
+
+            // Perform exponentiation if the operator is ^
+            case "^":
+              result = x ** y;
+              break;
+          }
+
+          // Log the result
+          console.log(x, element, y, "=", result);
+          // Push the result back to the stack
+          stack.push(result);
           break;
 
-        // If the element is ^
-        case "^":
-          // Pop two element from the stack
+        // Unary operators: SIN, COS, TAN
+        case "SIN":
+        case "COS":
+        case "TAN":
+        case "SQRT":
+        case "CEIL":
+        case "FLOOR":
+        case "ABS":
+        case "ROUND":
+        case "LOG":
+          // Log an error if there are not enough operands for the operator
+          if (stack.print().length < 1) {
+            console.log(">> Error: Not enough operands for the operator '" + element + "'");
+            break;
+          }
+
+          // Pop operand from the stack
           x = stack.pop();
-          y = stack.pop();
 
-          // Check if the element is a variable
+          // Get the value if it is a variable
           x = getVarValue(x);
-          y = getVarValue(y);
 
-          console.log(x, '^' , y, '=', x ** y);
+          switch (element) {
+            // Perform sine if the operator is SIN
+            case "SIN":
+              result = Math.sin(x);
+              console.log("sin(" + x + "radians) =", result);
+              break;
 
-          // Perform division and push the result to the stack
-          stack.push(x ** y);
+            // Perform cosine if the operator is COS
+            case "COS":
+              result = Math.cos(x);
+              console.log("cos(" + x + "radians) =", result);
+              break;
+
+            // Perform tangent if the operator is TAN
+            case "TAN":
+              result = Math.tan(x);
+              console.log("tan(" + x + "radians) =", result);
+              break;
+
+            // Perform square root if the operator is SQRT
+            case "SQRT":
+              result = Math.sqrt(x);
+              console.log("sqrt(" + x + ") =", result);
+              break;
+
+            // Return ceiling if the operator is CEIL
+            case "CEIL":
+              result = Math.ceil(x);
+              console.log("ceil(" + x + ") =", result);
+              break;
+
+            // Return floor if the operator is FLOOR
+            case "FLOOR":
+              result = Math.floor(x);
+              console.log("floor(" + x + ") =", result);
+              break;
+
+            // Return absolute value if the operator is ABS
+            case "ABS":
+              result = Math.abs(x);
+              console.log("abs(" + x + ") =", result);
+              break;
+            
+            // Return rounded value if the operator is ROUND
+            case "ROUND":
+              result = Math.round(x);
+              console.log("round(" + x + ") =", result);
+              break;
+
+            case "LOG":
+              result = Math.log(x);
+              console.log("ln(" + x + ") =", result);
+              break;
+          }
+
+          // Push the result back to the stack
+          stack.push(result);
           break;
 
         // If the element is =
@@ -484,10 +522,14 @@ function postFix(array) {
           }
           break;
 
+        case "RETURN":
+          main();
+          break;
+
         // If the element is not a operator mentioned above
         default:
           // Log an error message to the console
-          console.log(">> Error: The operator '" + element + "' is invalid and will be ignored. Please only use the following operators: +, -, *, /, %, ^, =");
+          console.log(">> Error: The input '" + element + "' is invalid and will be ignored. Please only use the following operators: +, -, *, /, %, ^, =, SIN, COS, TAN, SQRT, CEIL, FLOOR, ABS, ROUND, LOG.");
           // Break out of the switch statement
           break;
       }
